@@ -3,7 +3,7 @@ class ContactsController < ApplicationController
 
     def index 
         @contacts = Contact.all
-        render json: @contacts, status: :partial_content, methods: :kind_description
+        render json: @contacts, methods: :include, status: :partial_content
     end
     
     def show 
@@ -13,7 +13,7 @@ class ContactsController < ApplicationController
     def create 
         @contact = Contact.new(contact_params)
         if @contact.save
-            render json: @contact, status: :created, location: @contact
+            render json: @contact, include: [:kind, :phones], status: :created
         else
             render json: @contact.errors, status: :unprocessable_entify
         end
@@ -38,7 +38,7 @@ class ContactsController < ApplicationController
     end
 
     def contact_params
-        params.require(:contact).permit(:name, :email, :birthday)
+        params.require(:contact).permit(:name, :email, :birthday, :kind_id, phones_attributes: [:number])
     end
 
 end
