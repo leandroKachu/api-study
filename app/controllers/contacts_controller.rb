@@ -7,13 +7,13 @@ class ContactsController < ApplicationController
     end
     
     def show 
-        render json: @contact
+        render json: @contact, include: [:kind, :phones, :address], status: :created
     end
 
     def create 
         @contact = Contact.new(contact_params)
         if @contact.save
-            render json: @contact, include: [:kind, :phones], status: :created
+            render json: @contact, include: [:kind, :phones, :address], status: :created
         else
             render json: @contact.errors, status: :unprocessable_entify
         end
@@ -21,7 +21,7 @@ class ContactsController < ApplicationController
 
     def update
         if @contact.update(contact_params)
-            render json: @contact, status: :updated, location: @contact
+            render json: @contact, include: [:kind, :phones, :address], status: :created
         else
             render json: @contact.errors, status: :unprocessable_entify
         end
@@ -38,7 +38,8 @@ class ContactsController < ApplicationController
     end
 
     def contact_params
-        params.require(:contact).permit(:name, :email, :birthday, :kind_id, phones_attributes: [:number])
+        params.require(:contact).permit(:name, :email, :birthday, :kind_id, phones_attributes: [:id, :number],
+            address_attributes: [:id, :street, :city])
     end
 
 end

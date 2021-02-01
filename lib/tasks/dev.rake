@@ -2,6 +2,8 @@ namespace :dev do
   desc "Configuracao da gem faker"
   
   task setup: :environment do
+    puts "Resetando o banco de dadosss..."
+    %x(rake db:drop db:create db:migrate )
     kinds = %w(amigo comercial seila oq)
 
     kinds.each do  |kind|
@@ -30,6 +32,15 @@ namespace :dev do
       end
     end 
     puts "numero criado com sucesso"
+
+    Contact.all.each do |contact| 
+      contact = Address.create!(
+        street: Faker::Address.street_address,
+        city: Faker::Address.city,
+        contact:  contact
+      )
+    end 
+    puts "Endereços criado com sucesso"
 
   end
 
