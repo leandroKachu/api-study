@@ -1,6 +1,10 @@
 class KindsController < ApplicationController
-    before_action :set_kind, only: [:show, :destroy, :update]
+    include ActionController::HttpAuthentication::Token::ControllerMethods
+    TOKEN = "secret123"
+    before_action :authenticate
 
+    before_action :set_kind, only: [:show, :destroy, :update]
+   
     def index 
         @kinds = Kind.all
         render json: @kinds, status: :partial_content
@@ -32,6 +36,16 @@ class KindsController < ApplicationController
     end
 
     private
+
+    def authenticate
+        authenticate_or_request_with_http_token do  |token, options| 
+            ActiveSupport::SecurityUtils.secure_compare(
+                ::Digest::SHA256.hexdigest(token),
+                ::Digest::SHA256.hexdigest(TOKEN)
+                
+            )
+        end
+    end
 
     def set_kind
         @kind = Kind.find(params[:id])
