@@ -21,8 +21,10 @@ gem 'puma', '~> 4.1'
 gem 'rack-cors'
 gem 'active_model_serializers'
 gem 'jwt'
-
-# Reduces boot times through caching; required in config/boot.rb
+gem 'devise_token_auth'
+gem 'devise'
+gem 'versionist', '~> 1.7'
+# Reduces boot times through cacgem 'devise', '~> 4.2'hing; required in config/boot.rb
 gem 'bootsnap', '>= 1.4.2', require: false
 
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible

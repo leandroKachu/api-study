@@ -1,7 +1,8 @@
 class KindsController < ApplicationController
     include ActionController::HttpAuthentication::Token::ControllerMethods
-    TOKEN = "secret123"
-    before_action :authenticate
+    # TOKEN = "secret123"
+    before_action :authenticate_user!
+    # before_action :authenticate == jwt
 
     before_action :set_kind, only: [:show, :destroy, :update]
    
@@ -37,15 +38,23 @@ class KindsController < ApplicationController
 
     private
 
-    def authenticate
-        authenticate_or_request_with_http_token do  |token, options| 
-            ActiveSupport::SecurityUtils.secure_compare(
-                ::Digest::SHA256.hexdigest(token),
-                ::Digest::SHA256.hexdigest(TOKEN)
-                
-            )
-        end
-    end
+    # def authenticate ==== utilizando jwt para autenticar
+    #     authenticate_or_request_with_http_token do  |token, options|
+    #     hmac_secret = "my3secr3tk3y"
+    #         # aqui estou fazendo uma tratativa de sessão, que recebe o token, valida e libera acesso, 
+    #         # também adiciona o expiration time claim
+    #         begin
+    #             decoded_token = JWT.decode token, hmac_secret, true, { algorithm: 'HS256' }
+    #           rescue JWT::ExpiredSignature
+    #             render json: "Token se foi fi"
+    #             # Handle expired token, e.g. logout user or deny access
+    #           end
+    #         # ActiveSupport::SecurityUtils.secure_compare(
+    #         #     ::Digest::SHA256.hexdigest(token),
+    #         #     ::Digest::SHA256.hexdigest(TOKEN)
+    #         # )
+    #     end
+    # end
 
     def set_kind
         @kind = Kind.find(params[:id])
